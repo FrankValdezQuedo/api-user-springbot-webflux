@@ -1,0 +1,9 @@
+package com.flcode.api_user_flcode.infrastructure.repository;
+
+import com.flcode.api_user_flcode.infrastructure.entity.UserEntity;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface UserRepository extends ReactiveCrudRepository<UserEntity,Integer> {
+}

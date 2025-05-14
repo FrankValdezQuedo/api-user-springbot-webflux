@@ -1,0 +1,18 @@
+server:
+  port: 8083
+spring:
+  application:
+    name: api-sb-supplier-ms
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
+  r2dbc:
+    url: r2dbc:postgresql://localhost:5432/flcodebd
+    username: postgres
+    password: 1234
+logging:
+  level:
+    org.springframework.web: DEBUG
+    org.springframework.boot: DEBUG
+    org.springframework.data: DEBUG
+    io.r2dbc.postgresql: DEBUG
