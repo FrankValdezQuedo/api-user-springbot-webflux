@@ -1,5 +1,6 @@
 package com.flcode.api_user_flcode.application.port.in;
 
+import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
@@ -12,4 +13,5 @@ public interface UserImputPort {
     Mono<UserResponse>saveUser(UserRequest userRequest);
     Mono<UserResponse>updateUser(UserRequest userRequest);
     Mono<UserResponse>deleteById(Integer idUser);
+    Mono<LoginResponse> login(String email, String password);
 }

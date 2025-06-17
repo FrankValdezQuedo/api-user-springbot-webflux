@@ -1,6 +1,7 @@
 package com.flcode.api_user_flcode.infrastructure.rest.Controller;
 
 import com.flcode.api_user_flcode.application.port.in.UserImputPort;
+import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
@@ -39,11 +40,15 @@ public class UserController {
         return userImputPort.updateUser(userRequest);
     }
 
-
     @DeleteMapping("/delete/{id}")
     Mono<UserResponse> deleteUser(@PathVariable Integer id) {
         return userImputPort.deleteById(id);
     }
 
 
+    @PostMapping("/login")
+    Mono<LoginResponse> loginUser(@Valid @RequestBody UserRequest userRequest) {
+        return userImputPort.login(userRequest.getEmail(), userRequest.getPassword());
+
+    }
 }

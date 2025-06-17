@@ -1,11 +1,13 @@
 package com.flcode.api_user_flcode.infrastructure.utils;
 
 import com.flcode.api_user_flcode.domain.error.UserErrorFactory;
+import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.User;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
 import com.flcode.api_user_flcode.infrastructure.entity.UserEntity;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
+import com.flcode.api_user_flcode.infrastructure.segurity.JwtUtil;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
@@ -19,8 +21,18 @@ public class UserUtils {
         return UserListResponse.builder()
                 .data(Collections.singletonList(convertUserResponse(entity)))
                 .build();
-
     }
+
+    public static LoginResponse convertLoginResponse(UserEntity entity) {
+        String token = JwtUtil.generateToken(entity.getId().toString(), entity.getEmail());
+        return LoginResponse.builder()
+                .userId(String.valueOf(entity.getId()))
+                .name(entity.getNombre())
+                .email(entity.getEmail())
+                .token(token) // puedes generar un token JWT aquí si quieres
+                .build();
+    }
+
 
     public static User convertUserResponse(UserEntity entity) {
         return User.builder()
@@ -103,6 +115,10 @@ public class UserUtils {
     }
 
     public static Mono<UserListResponse> handleErrorUserMono(Throwable error) {
+        return Mono.error(UserErrorFactory.createException(error));
+    }
+
+    public static Mono<LoginResponse> handleErrorLoginMono(Throwable error) {
         return Mono.error(UserErrorFactory.createException(error));
     }
 

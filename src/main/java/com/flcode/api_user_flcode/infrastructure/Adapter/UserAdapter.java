@@ -33,4 +33,9 @@ public class UserAdapter implements UserRepositoryOutputPort {
     public Mono<Void> deleteById(Integer idUser) {
         return userRepository.deleteById(idUser);
     }
+
+    @Override
+    public Mono<UserEntity> findByEmailAndPassword(String email, String password) {
+        return userRepository.findByEmailAndPassword(email, password);
+    }
 }

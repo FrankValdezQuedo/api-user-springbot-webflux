@@ -3,6 +3,7 @@ package com.flcode.api_user_flcode.application.service;
 import com.flcode.api_user_flcode.application.port.in.UserImputPort;
 import com.flcode.api_user_flcode.application.port.out.UserRepositoryOutputPort;
 import com.flcode.api_user_flcode.domain.error.UserNotFoundException;
+import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
@@ -78,5 +79,14 @@ public class UserService implements UserImputPort {
                 .switchIfEmpty(Mono.error(new UserNotFoundException("Usuario no encontrado con ID: " + idUser)))
                 .doOnError(error -> System.out.println(Constantes.ERROR_DELETE + error))
                 .onErrorResume(UserUtils::handleErrorUser);
+    }
+
+    @Override
+    public Mono<LoginResponse> login(String email, String password) {
+        return userRepositoryOutputPort.findByEmailAndPassword(email, password)
+                .map(UserUtils::convertLoginResponse)
+                .switchIfEmpty(Mono.error(new UserNotFoundException("Usuario no encontrado con email: " + email)))
+                .doOnError(error -> log.error(error.getMessage()))
+                .onErrorResume(UserUtils::handleErrorLoginMono);
     }
 }

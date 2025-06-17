@@ -32,170 +32,64 @@ public class GlobalExceptionHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(WebExchangeBindException.class)
     public ErrorResponse handleWebExchangeBindException(WebExchangeBindException ex) {
-        String errorMessage =
-                ex.getBindingResult().getFieldErrors().stream()
-                        .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-                        .findFirst()
-                        .orElse(Constantes.INVALID_REQUEST);
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage()).findFirst().orElse(Constantes.INVALID_REQUEST);
 
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(HttpStatus.BAD_REQUEST.name())
-                                        .message(errorMessage)
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .severity(Constantes.SEVERITY)
-                                        .category(Constantes.BAD_REQUEST)
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(HttpStatus.BAD_REQUEST.name()).message(errorMessage).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(Constantes.BAD_REQUEST).build())).build();
     }
 
     // 400 valida resquest
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({MethodArgumentNotValidException.class})
     public ErrorResponse handleMethodArgumentNotValidException(MethodArgumentNotValidException ex) {
-        String errorMessage =
-                ex.getBindingResult().getFieldErrors().stream()
-                        .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
-                        .findFirst()
-                        .orElse(Constantes.INVALID_REQUEST);
+        String errorMessage = ex.getBindingResult().getFieldErrors().stream().map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage()).findFirst().orElse(Constantes.INVALID_REQUEST);
 
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(HttpStatus.BAD_REQUEST.name())
-                                        .message(errorMessage)
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .severity(Constantes.SEVERITY)
-                                        .category(Constantes.BAD_REQUEST)
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(HttpStatus.BAD_REQUEST.name()).message(errorMessage).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(Constantes.BAD_REQUEST).build())).build();
     }
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler({ValidationException.class})
     public ErrorResponse handlerValidationException1(Exception ex) {
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(HttpStatus.BAD_REQUEST.name())
-                                        .message(ex.getMessage())
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(HttpStatus.BAD_REQUEST.name()).message(ex.getMessage()).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).build())).build();
     }
 
     // Manejo de errores generales - Código 500
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ServerWebInputException.class)
     public ErrorResponse handlerSer(ServerWebInputException ex) {
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(Constantes.BAD_REQUEST)
-                                        .message(ex.getMessage())
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .severity(Constantes.SEVERITY)
-                                        .category(HttpStatus.BAD_REQUEST.name())
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(Constantes.BAD_REQUEST).message(ex.getMessage()).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(HttpStatus.BAD_REQUEST.name()).build())).build();
     }
 
     // Manejo de errores generales - Código 500
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
     public ErrorResponse handlerException(Exception ex) {
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(Constantes.INTERNAL_ERROR_CATEGORY)
-                                        .message(ex.getMessage())
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .severity(Constantes.SEVERITY)
-                                        .category(HttpStatus.INTERNAL_SERVER_ERROR.name())
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(Constantes.INTERNAL_ERROR_CATEGORY).message(ex.getMessage()).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(HttpStatus.INTERNAL_SERVER_ERROR.name()).build())).build();
     }
 
     // Manejo de errores generales - Código 500
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(UserExceptions.class)
     public ErrorResponse handlerSupplierExceptions(UserExceptions ex) {
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(Constantes.INTERNAL_ERROR_CATEGORY)
-                                        .message(ex.getMessage())
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .severity(Constantes.SEVERITY)
-                                        .category(HttpStatus.INTERNAL_SERVER_ERROR.name())
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(Constantes.INTERNAL_ERROR_CATEGORY).message(ex.getMessage()).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(HttpStatus.INTERNAL_SERVER_ERROR.name()).build())).build();
     }
 
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(UserNotFoundException.class)
     public UserListResponse handlerSupplierNotFoundException(UserNotFoundException ex) {
-        return UserListResponse
-                .builder()
-                .errorResponse(ErrorResponse.
-                        builder()
-                        .notifications(List.of(Notification.builder()
-                                .code(Constantes.NOT_FOUND)
-                                .message(ex.getMessage())
-                                .uuid(UUID.randomUUID().toString())
-                                .timestamp(LocalDate.now().toString())
-                                .severity(Constantes.SEVERITY)
-                                .category(HttpStatus.NOT_FOUND.name())
-                                .build()))
-                        .build())
-                .build();
+        return UserListResponse.builder().errorResponse(ErrorResponse.builder().notifications(List.of(Notification.builder().code(Constantes.NOT_FOUND).message(ex.getMessage()).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(HttpStatus.NOT_FOUND.name()).build())).build()).build();
     }
+
     // Manejo de errores generales - Código 503
     @ResponseStatus(HttpStatus.SERVICE_UNAVAILABLE)
     @ExceptionHandler(ServiceUnavailableExceptions.class)
     public ErrorResponse handlerSupplierExceptions(ServiceUnavailableExceptions ex) {
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(Constantes.SERVICE_UNAVAILABLE)
-                                        .message(ex.getMessage())
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .severity(Constantes.SEVERITY)
-                                        .category(HttpStatus.SERVICE_UNAVAILABLE.name())
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(Constantes.SERVICE_UNAVAILABLE).message(ex.getMessage()).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(HttpStatus.SERVICE_UNAVAILABLE.name()).build())).build();
     }
 
     // Manejo de errores generales - Código 504
     @ResponseStatus(HttpStatus.GATEWAY_TIMEOUT)
     @ExceptionHandler(GatewayTimeOutExceptions.class)
     public ErrorResponse handlerSupplierExceptions(GatewayTimeOutExceptions ex) {
-        return ErrorResponse.builder()
-                .notifications(
-                        List.of(
-                                Notification.builder()
-                                        .code(Constantes.GATEWAY_TIMEOUT)
-                                        .message(ex.getMessage())
-                                        .uuid(UUID.randomUUID().toString())
-                                        .timestamp(LocalDate.now().toString())
-                                        .severity(Constantes.SEVERITY)
-                                        .category(HttpStatus.GATEWAY_TIMEOUT.name())
-                                        .build()))
-                .build();
+        return ErrorResponse.builder().notifications(List.of(Notification.builder().code(Constantes.GATEWAY_TIMEOUT).message(ex.getMessage()).uuid(UUID.randomUUID().toString()).timestamp(LocalDate.now().toString()).severity(Constantes.SEVERITY).category(HttpStatus.GATEWAY_TIMEOUT.name()).build())).build();
     }
 }
