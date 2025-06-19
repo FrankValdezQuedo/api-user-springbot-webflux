@@ -2,15 +2,19 @@ package com.flcode.api_user_flcode.application.service;
 
 import com.flcode.api_user_flcode.application.port.in.UserImputPort;
 import com.flcode.api_user_flcode.application.port.out.UserRepositoryOutputPort;
+import com.flcode.api_user_flcode.domain.error.InvalidCredentialsException;
 import com.flcode.api_user_flcode.domain.error.UserNotFoundException;
 import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
+import com.flcode.api_user_flcode.infrastructure.entity.UserEntity;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
+import com.flcode.api_user_flcode.infrastructure.segurity.SecurityConfig;
 import com.flcode.api_user_flcode.infrastructure.utils.Constantes;
 import com.flcode.api_user_flcode.infrastructure.utils.UserUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
@@ -20,6 +24,7 @@ import reactor.core.publisher.Mono;
 public class UserService implements UserImputPort {
 
     private final UserRepositoryOutputPort userRepositoryOutputPort;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     public Mono<UserListResponse> findById(Integer id) {
@@ -45,11 +50,16 @@ public class UserService implements UserImputPort {
 
     @Override
     public Mono<UserResponse> saveUser(UserRequest userRequest) {
-        return Mono.just(userRequest)
-                .map(user -> UserUtils.convertUserEntity(userRequest))
+        return Mono.fromSupplier(() -> {
+                    // Convertir DTO a entidad
+                    UserEntity userEntity = UserUtils.convertUserEntity(userRequest);
+                    // Cifrar contraseña
+                    userEntity.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+                    return userEntity;
+                })
                 .flatMap(userRepositoryOutputPort::saveOrUpdate)
-                .map(x -> UserUtils.convertUserResponseSave(String.valueOf(x.getId())))
-                .doOnError(x -> log.error(Constantes.ERROR_SAVE + "{}", x.getMessage()))
+                .map(user -> UserUtils.convertUserResponseSave(String.valueOf(user.getId())))
+                .doOnError(error -> log.error(Constantes.ERROR_SAVE + "{}", error.getMessage()))
                 .onErrorResume(UserUtils::handleErrorUser);
     }
 
@@ -82,11 +92,27 @@ public class UserService implements UserImputPort {
     }
 
     @Override
-    public Mono<LoginResponse> login(String email, String password) {
-        return userRepositoryOutputPort.findByEmailAndPassword(email, password)
-                .map(UserUtils::convertLoginResponse)
+    public Mono<LoginResponse> login(String email, String rawPassword) {
+        return userRepositoryOutputPort.findByEmail(email)
+                .doOnNext(user -> log.info("Usuario encontrado: {}", user.getEmail()))
                 .switchIfEmpty(Mono.error(new UserNotFoundException("Usuario no encontrado con email: " + email)))
-                .doOnError(error -> log.error(error.getMessage()))
+                .flatMap(user -> {
+                    log.debug("Raw password: {}", rawPassword);
+                    log.debug("Stored hash: {}", user.getPassword());
+
+                    if (user.getPassword() == null) {
+                        return Mono.error(new IllegalStateException("Contraseña no encontrada en usuario"));
+                    }
+
+                    boolean passwordValid = passwordEncoder.matches(rawPassword, user.getPassword());
+                    if (passwordValid) {
+                        return Mono.just(UserUtils.convertLoginResponse(user));
+                    } else {
+                        return Mono.error(new InvalidCredentialsException("Contraseña incorrecta"));
+                    }
+                })
+                .doOnError(error -> log.error("Error en login", error))
                 .onErrorResume(UserUtils::handleErrorLoginMono);
     }
+
 }

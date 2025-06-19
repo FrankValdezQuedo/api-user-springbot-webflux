@@ -10,9 +10,3 @@ spring:
     url: r2dbc:postgresql://localhost:5432/flcodebd
     username: postgres
     password: 1234
-logging:
-  level:
-    org.springframework.web: DEBUG
-    org.springframework.boot: DEBUG
-    org.springframework.data: DEBUG
-    io.r2dbc.postgresql: DEBUG

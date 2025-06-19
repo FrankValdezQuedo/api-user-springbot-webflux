@@ -29,7 +29,7 @@ public class UserUtils {
                 .userId(String.valueOf(entity.getId()))
                 .name(entity.getNombre())
                 .email(entity.getEmail())
-                .token(token) // puedes generar un token JWT aquí si quieres
+                .token(token)
                 .build();
     }
 

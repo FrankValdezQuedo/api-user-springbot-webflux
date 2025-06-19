@@ -13,6 +13,6 @@ public interface UserRepositoryOutputPort {
 
     Mono<Void> deleteById(Integer idUser);
 
-    Mono<UserEntity> findByEmailAndPassword(String email, String password);
+    Mono<UserEntity> findByEmail(String email);
 }
 

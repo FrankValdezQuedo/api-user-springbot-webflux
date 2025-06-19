@@ -35,7 +35,7 @@ public class UserAdapter implements UserRepositoryOutputPort {
     }
 
     @Override
-    public Mono<UserEntity> findByEmailAndPassword(String email, String password) {
-        return userRepository.findByEmailAndPassword(email, password);
+    public Mono<UserEntity> findByEmail(String email) {
+        return userRepository.findByEmail(email);
     }
 }
