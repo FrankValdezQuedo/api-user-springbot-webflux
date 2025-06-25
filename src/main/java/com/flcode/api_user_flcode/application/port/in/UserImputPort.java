@@ -13,5 +13,4 @@ public interface UserImputPort {
     Mono<UserResponse>saveUser(UserRequest userRequest);
     Mono<UserResponse>updateUser(UserRequest userRequest);
     Mono<UserResponse>deleteById(Integer idUser);
-    Mono<LoginResponse> login(String email, String password);
 }

@@ -1,5 +1,6 @@
 package com.flcode.api_user_flcode.infrastructure.rest.Controller;
 
+import com.flcode.api_user_flcode.application.port.in.AuthImportPort;
 import com.flcode.api_user_flcode.application.port.in.UserImputPort;
 import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
@@ -19,6 +20,7 @@ import reactor.core.publisher.Mono;
 public class UserController {
 
     private final UserImputPort userImputPort;
+    private final AuthImportPort authImportPort;
 
     @GetMapping("/{id}")
     Mono<UserListResponse> getUserById(@PathVariable Integer id) {
@@ -48,7 +50,7 @@ public class UserController {
 
     @PostMapping("/login")
     Mono<LoginResponse> loginUser(@Valid @RequestBody UserRequest userRequest) {
-        return userImputPort.login(userRequest.getEmail(), userRequest.getPassword());
+        return authImportPort.login(userRequest.getEmail(), userRequest.getPassword());
 
     }
 }

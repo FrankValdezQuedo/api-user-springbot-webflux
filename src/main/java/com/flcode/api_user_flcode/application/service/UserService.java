@@ -9,7 +9,6 @@ import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
 import com.flcode.api_user_flcode.infrastructure.entity.UserEntity;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
-import com.flcode.api_user_flcode.infrastructure.segurity.SecurityConfig;
 import com.flcode.api_user_flcode.infrastructure.utils.Constantes;
 import com.flcode.api_user_flcode.infrastructure.utils.UserUtils;
 import lombok.AllArgsConstructor;
@@ -91,28 +90,5 @@ public class UserService implements UserImputPort {
                 .onErrorResume(UserUtils::handleErrorUser);
     }
 
-    @Override
-    public Mono<LoginResponse> login(String email, String rawPassword) {
-        return userRepositoryOutputPort.findByEmail(email)
-                .doOnNext(user -> log.info("Usuario encontrado: {}", user.getEmail()))
-                .switchIfEmpty(Mono.error(new UserNotFoundException("Usuario no encontrado con email: " + email)))
-                .flatMap(user -> {
-                    log.debug("Raw password: {}", rawPassword);
-                    log.debug("Stored hash: {}", user.getPassword());
-
-                    if (user.getPassword() == null) {
-                        return Mono.error(new IllegalStateException("Contraseña no encontrada en usuario"));
-                    }
-
-                    boolean passwordValid = passwordEncoder.matches(rawPassword, user.getPassword());
-                    if (passwordValid) {
-                        return Mono.just(UserUtils.convertLoginResponse(user));
-                    } else {
-                        return Mono.error(new InvalidCredentialsException("Contraseña incorrecta"));
-                    }
-                })
-                .doOnError(error -> log.error("Error en login", error))
-                .onErrorResume(UserUtils::handleErrorLoginMono);
-    }
 
 }
