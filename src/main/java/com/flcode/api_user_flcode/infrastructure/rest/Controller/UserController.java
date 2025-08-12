@@ -5,6 +5,7 @@ import com.flcode.api_user_flcode.application.port.in.UserImputPort;
 import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
+import com.flcode.api_user_flcode.infrastructure.model.AuthRequest;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -49,8 +50,8 @@ public class UserController {
 
 
     @PostMapping("/login")
-    Mono<LoginResponse> loginUser(@Valid @RequestBody UserRequest userRequest) {
-        return authImportPort.login(userRequest.getEmail(), userRequest.getPassword());
+    Mono<LoginResponse> loginUser(@Valid @RequestBody AuthRequest authRequest) {
+        return authImportPort.login(authRequest.getEmail(), authRequest.getPassword());
 
     }
 }

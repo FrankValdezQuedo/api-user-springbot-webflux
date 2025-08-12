@@ -23,7 +23,7 @@ public class SecurityConfig {
                 .httpBasic(ServerHttpSecurity.HttpBasicSpec::disable) // ⬅️ Desactiva Basic Auth
                 .formLogin(ServerHttpSecurity.FormLoginSpec::disable) // ⬅️ Desactiva Form Login
                 .authorizeExchange(exchange -> exchange
-                        .pathMatchers("/api/user/save", "/api/user/login", "/swagger-ui/**",
+                        .pathMatchers("/api/user/save", "/api/user/login","/api/user/all", "/swagger-ui/**",
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml").permitAll()
                         .anyExchange().authenticated()

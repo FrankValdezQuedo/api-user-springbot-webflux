@@ -10,3 +10,7 @@ spring:
     url: r2dbc:postgresql://localhost:5432/flcodebd
     username: postgres
     password: 1234
+
+  logging:
+    level:
+      org.springframework.web.cors: DEBUG

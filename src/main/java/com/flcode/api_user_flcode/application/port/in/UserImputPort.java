@@ -1,6 +1,5 @@
 package com.flcode.api_user_flcode.application.port.in;
 
-import com.flcode.api_user_flcode.domain.model.LoginResponse;
 import com.flcode.api_user_flcode.domain.model.UserListResponse;
 import com.flcode.api_user_flcode.domain.model.UserResponse;
 import com.flcode.api_user_flcode.infrastructure.model.UserRequest;
